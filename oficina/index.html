@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <label>Cadastro de clientes</label>
+    <form action="/src/services/clienteService.ts" method="post">
+        <label>nome</label>
+        <input type="text" name="nome" />
+        <label>email</label>
+        <input type="text" name="email" />
+        <label>telefone</label>
+        <input type="text" name="telefone" />
+        <label>cpf</label>
+        <input type="text" name="cpf" />
+        <button type="submit">cadastrar</button>
+    </form>
+
+    <form action="/src/services/usuarioService.ts" method="post" id="formulariosfoda">
+        
+        <lavel>Cadastro de usuarios</label>
+        <label>nome</label>
+        <input type="text" name="nome" id="nameInput"/>
+        <label>email</label>
+        <input type="text" name="email" />
+        <label>senha</label>
+        <input type="text" name="senha" />
+        <button type="submit">cadastrar</button>
+    </form>
+        <form action="/src/server.ts" method="get">
+        <button type="submit">listar clientes</button>
+    </form>
+    
+    <script>
+
+        const form = document.getElementById('formulariosfoda')
+        const nameInput = document.getElementById('nameInput')
+
+        let currentName = ''
+
+        nameInput.addEventListener('onchange', (ev) => {
+            ev.preventDefault()
+            currentName = ev.target.value;
+        })
+
+        form.addEventListener('submit', function (evento) {
+            evento.preventDefault(); // "não recarregue a página, deixa comigo"
+            handler();
+        });
+
+        const handler = () => {
+            const url = 'http://localhost:8080/cliente';
+            fetch(url,{
+            method: 'POST',
+            headers: {ContentType: 'application/json'},
+            body: JSON.stringify({
+                nome: 'John Doe',
+                email: 'john.doe@example.com',
+                telefone: '123456789',
+                cpf: '123.456.789-00'
+            }), 
+    })
+        }
+    
+
+</script>
+</body>
+</html>

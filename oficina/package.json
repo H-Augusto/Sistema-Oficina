@@ -1,0 +1,20 @@
+{
+  "name": "oficina-backend",
+  "version": "1.0.0",
+  "description": "Backend em TypeScript (Node.js puro, sem Express) para o sistema oficina",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "ts-node-dev --respawn src/server.ts"
+  },
+  "dependencies": {
+    "mysql2": "^3.9.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "ts-node-dev": "^2.0.0",
+    "@types/node": "^20.11.0",
+    "@types/bcryptjs": "^2.4.6"
+  }
+}
