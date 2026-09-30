@@ -19,10 +19,7 @@ export async function criarCliente(dados: {
     nome: string,
     telefone: string,
     endereco: string,
-    hashCpf: string,
-    created_at: Date,
-    update_at: Date,
-    active: boolean
+    hashCpf: string
 })
 {
     const [result] = await pool.query(
@@ -38,13 +35,10 @@ export async function criarVeiculo(dados: {
         
         id_veiculo: number,
         marca: string,
-        ano: string,
+        ano: number,
         placa: string,
         modelo: string,
-        cor: string,
-        created_at: Date,
-        update_at: Date,
-        active: boolean
+        cor: string
     })
 
 {
@@ -59,8 +53,6 @@ export async function criarVeiculo(dados: {
 export async function criarOs(dados: {
     nome: string,
     valor: number,
-    created_at: Date,
-    update_at: Date,
     status: string,
     id_veiculo: number,
     usuario_id_usuario: number
@@ -70,7 +62,7 @@ export async function criarOs(dados: {
     const [result] = await pool.query(
         `insert into OS (nome, valor, created_at, updated_at, status, id_veiculo, usuario_id_usuario)
         values (?,?, NOW(), NOW(), ?)`,
-        [dados.nome, dados.valor, dados.created_at, dados.update_at, dados.status, dados.id_veiculo, dados.usuario_id_usuario]
+        [dados.nome, dados.valor, dados.status, dados.id_veiculo, dados.usuario_id_usuario]
     );
     return result;
 }
@@ -80,9 +72,6 @@ export async function criarMecanico(dados: {
         id_mecanico: number,
         nome: string,
         telefone: string
-        created_at: Date,
-        update_at: Date,
-        active: boolean
     
     })
 {
@@ -98,9 +87,7 @@ export async function criarMecanico(dados: {
 export async function criarServico(dados:{
     servico: string,
     preco: number,
-    created_at: Date,
-    update_at: Date,
-    active: boolean
+
 
 })
 
@@ -113,3 +100,4 @@ export async function criarServico(dados:{
     return result;
 
 }
+
