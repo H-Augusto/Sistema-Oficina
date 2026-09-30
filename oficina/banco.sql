@@ -18,7 +18,7 @@ USE `oficina` ;
 -- Table `oficina`.`cliente`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `oficina`.`cliente` (
-  `id_cliente` INT NOT NULL,
+  `id_cliente` INT NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(150) NOT NULL,
   `telefone` VARCHAR(14) NOT NULL,
   `endereco` varchar(70) not null, 

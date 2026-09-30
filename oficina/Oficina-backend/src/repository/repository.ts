@@ -7,7 +7,7 @@ export async function criarUsuario(dados: {
 })
 {
     const [result] = await pool.query(
-        `insert into usuario (nome, email, senha, created_at, updated_at, active)
+        `insert into usuario (nome, email, senha, created_at, update_at, active)
         values (?,?,?, NOW(), NOW(), 1)`,
         [dados.nome, dados.email, dados.senhaHash]
 
@@ -23,8 +23,8 @@ export async function criarCliente(dados: {
 })
 {
     const [result] = await pool.query(
-        `insert into cliente (id_cliente, nome, telefone, endereco, cpf, created_at, update_at, active)
-        VALUES (?, ?, ?, ?, ?, NOW(), NOW(), 1)`,
+        `insert into cliente (nome, telefone, endereco, cpf, created_at, update_at, active)
+        VALUES (?, ?, ?, ?, NOW(), NOW(), 1)`,
         [dados.nome, dados.telefone, dados.endereco, dados.hashCpf]
     );
     return result;
@@ -33,7 +33,6 @@ export async function criarCliente(dados: {
 
 export async function criarVeiculo(dados: {
         
-        id_veiculo: number,
         marca: string,
         ano: number,
         placa: string,
@@ -43,9 +42,9 @@ export async function criarVeiculo(dados: {
 
 {
     const [result] = await pool.query(
-        `insert into veiculo (id_veiculo, marca, ano, placa, modelo, cor, created_at, updated_at, active)
-        Values (?, ?, ?, ?, ?, ?, NOW(), NOW(), 1)`,
-        [dados.id_veiculo, dados.marca, dados.ano, dados.placa, dados.modelo, dados.cor]
+        `insert into veiculo (marca, ano, placa, modelo, cor, created_at, update_at, active)
+        Values (?, ?, ?, ?, NOW(), NOW(), 1)`,
+        [dados.marca, dados.ano, dados.placa, dados.modelo, dados.cor]
     );
     return result;
 }
@@ -60,8 +59,8 @@ export async function criarOs(dados: {
 
 {
     const [result] = await pool.query(
-        `insert into OS (nome, valor, created_at, updated_at, status, id_veiculo, usuario_id_usuario)
-        values (?,?, NOW(), NOW(), ?)`,
+        `insert into OS (nome, valor, created_at, update_at, status, id_veiculo, usuario_id_usuario)
+        values (?,?, NOW(), NOW(), ?, ?, ?)`,
         [dados.nome, dados.valor, dados.status, dados.id_veiculo, dados.usuario_id_usuario]
     );
     return result;
@@ -69,16 +68,15 @@ export async function criarOs(dados: {
 
 export async function criarMecanico(dados: {
 
-        id_mecanico: number,
         nome: string,
         telefone: string
     
     })
 {
     const [result] = await pool.query(
-        `insert into mecanico (id_mecanico, nome, telefone, created_at, updated_at, active)
-        values (?, ?, ?, NOW(), NOW(), 1)`,
-        [dados.id_mecanico, dados.nome, dados.telefone]
+        `insert into mecanico (nome, telefone, created_at, update_at, active)
+        values (?, ?, NOW(), NOW(), 1)`,
+        [dados.nome, dados.telefone]
 
     );
     return result;
@@ -87,13 +85,15 @@ export async function criarMecanico(dados: {
 export async function criarServico(dados:{
     servico: string,
     preco: number,
-
+    created_at: Date,
+    update_at: Date,
+    active: boolean
 
 })
 
 {
     const [result] = await pool.query(
-        `insert into servico (servico, preco, created_at, updated_at, active)
+        `insert into servico (servico, preco, created_at, update_at, active)
         values (?, ?, NOW(), NOW(), 1)`,
         [dados.servico, dados.preco, dados.created_at, dados.update_at, dados.active]
     );

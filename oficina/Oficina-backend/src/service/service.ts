@@ -53,7 +53,7 @@ export async function processVeiculo(dados:{
     created_at: Date,
     update_at: Date,
     active: boolean
-}) 
+})
 
 {
     const veiculoTransformado =  ({

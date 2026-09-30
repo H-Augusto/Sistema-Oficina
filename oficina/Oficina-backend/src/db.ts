@@ -4,10 +4,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const pool = mysql.createPool({
-    host: process.env.db_host || 'localhost',
-    user: process.env.db_user || 'root',
-    password: process.env.db_password || '',
-    database: process.env.db_name || 'oficina',
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'oficina',
     waitForConnections: true,
     connectionLimit: 10,
 });
