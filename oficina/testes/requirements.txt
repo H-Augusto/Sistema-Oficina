@@ -1,0 +1,25 @@
+# requirements.txt — BIBLIOTECAS NECESSARIAS PARA OS TESTES
+# ---------------------------------------------------------------------
+# Este arquivo lista tudo que os testes precisam. Quem clonar o projeto
+# instala tudo de uma vez com:
+#     pip install -r requirements.txt
+#
+# As linhas com '==' travam a VERSAO EXATA. Isso garante que o teste
+# rode igual para todo mundo (sem "na minha maquina funciona").
+# =====================================================================
+
+# Executor de testes (roda os testes e gera relatorio)
+pytest==9.1.1
+
+# Cliente HTTP (faz as requisicoes para a API: GET, POST, PUT, DELETE)
+requests==2.34.2
+
+# Acesso direto ao MySQL (para conferir como o dado ficou no banco)
+mysql-connector-python==9.3.0
+
+# Biblioteca JWT em Python (usada para FABRICAR tokens falsos nos
+# testes de seguranca, simulando um atacante)
+PyJWT==2.15.1
+
+# Ferramenta de teste de estresse (simula muitos usuarios simultaneos)
+locust==2.46.7

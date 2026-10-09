@@ -1,0 +1,16 @@
+# =====================================================================
+# .gitignore (testes) — o que NAO vai para o Git
+# ---------------------------------------------------------------------
+# '.venv' e a pasta do ambiente virtual (bibliotecas locais). Ela e
+# enorme e especifica desta maquina, por isso nao versiona. Quem clonar
+# recria com: python3 -m venv .venv && pip install -r requirements.txt
+# =====================================================================
+.venv/
+
+# Cache que o pytest gera (pode apagar sem medo)
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# Resultados do locust (relatorios gerados)
+locust_resultado*
