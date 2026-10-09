@@ -13,6 +13,7 @@
 // Repete para as 6 entidades.
 // =====================================================================
 import { Router } from 'express';
+import { autenticar } from './middleware/auth';
 import {
     clienteController, validarCliente,
     usuarioController, validarUsuario,
@@ -20,9 +21,21 @@ import {
     mecanicoController, validarMecanico,
     servicoController, validarServico,
     osController, validarOs, validarOsServico, validarOsMecanico,
+    authController, validarLogin,
 } from './controller/controller';
 
 export const rotas = Router();
+
+// ---------------------------------------------------------------------
+// LOGIN (rota PUBLICA — nao passa pelo autenticar)
+// Obter um token exige apenas email+senha corretos. Por isso ela vem
+// ANTES da protecao: faria voce precisar de um token para conseguir um.
+// ---------------------------------------------------------------------
+rotas.post('/login', validarLogin, authController.login);
+
+// A partir daqui, TODAS as rotas exigem token (autenticar).
+// autenticar e o "seguranca da porta": sem token valido -> 401.
+rotas.use(autenticar);
 
 // ---------------------------------------------------------------------
 // CLIENTE

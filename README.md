@@ -78,7 +78,32 @@ usuario (1) ────< (N) OS          1 usuário abre N ordens
 
 Base URL: `http://localhost:3000/api`
 
-#### CRUD Principal
+### 🔐 Autenticação (JWT)
+
+A partir desta versão, **todas as rotas de dados exigem um token**. O único endpoint público é o de login.
+
+**Como usar:**
+
+```bash
+# 1. Fazer login (rota pública) e pegar o token
+curl -X POST http://localhost:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"seu@email.com","senha":"suaSenha"}'
+# -> devolve { "token": "eyJ...", "usuario": {...} }
+
+# 2. Usar o token em todas as outras requisições
+curl http://localhost:3000/api/clientes \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
+
+> ⚠️ Sem token (ou com token inválido/expirado), a API responde **401**.
+> O token expira em **8 horas** (configure `JWT_EXPIRA_EM` no `.env`).
+
+| Método | Rota | Acesso | Descrição |
+|--------|------|--------|-----------|
+| POST | `/login` | 🔓 Público | Autentica e devolve o token |
+
+#### CRUD Principal (🔒 requer token)
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
@@ -90,7 +115,7 @@ Base URL: `http://localhost:3000/api`
 
 > O mesmo padrão se aplica a: **`/usuarios`**, **`/veiculos`**, **`/mecanicos`**, **`/servicos`** e **`/os`**
 
-#### Ordens de Serviço (OS)
+#### Ordens de Serviço (OS) (🔒 requer token)
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
@@ -125,6 +150,9 @@ Oficina-backend/
 │   ├── schemas.ts             # Validação e tipos (Zod)
 │   ├── db.ts                  # Conexão com MySQL (pool)
 │   ├── hash.ts                # Hash de senha/CPF
+│   ├── jwt.ts                 # Gerar e verificar tokens
+│   ├── middleware/
+│   │   └── auth.ts            # Protege rotas (token → 401)
 │   ├── controller/
 │   │   └── controller.ts      # Ponte HTTP (status codes)
 │   ├── service/
@@ -186,6 +214,31 @@ Server runs at **http://localhost:3000**
 ### 🌐 API Endpoints
 
 Base URL: `http://localhost:3000/api`
+
+### 🔐 Authentication (JWT)
+
+**All data routes now require a token.** Only the login endpoint is public.
+
+```bash
+# 1. Log in (public route) to get a token
+curl -X POST http://localhost:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"your@email.com","password":"yourPass"}'
+# -> returns { "token": "eyJ...", "user": {...} }
+
+# 2. Use the token in every other request
+curl http://localhost:3000/api/clientes \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+> ⚠️ Without a token (or with an invalid/expired one), the API responds **401**.
+> Tokens expire in **8 hours** (configure `JWT_EXPIRA_EM` in `.env`).
+
+| Method | Route | Access | Description |
+|--------|-------|--------|-------------|
+| POST | `/login` | 🔓 Public | Authenticates and returns a token |
+
+#### Main CRUD (🔒 token required)
 
 | Method | Route | Description |
 |--------|-------|-------------|
