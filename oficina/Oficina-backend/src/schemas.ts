@@ -108,6 +108,17 @@ export const osSchema = z.object({
 export type OsInput = z.infer<typeof osSchema>;
 
 // ---------------------------------------------------------------------
+// ---------------------------------------------------------------------
+// LOGIN (autenticacao)
+// Recebe email + senha e confere contra o banco. Mais simples que o
+// cadastro: aqui nao criamos senha nova, so conferimos a existente.
+// ---------------------------------------------------------------------
+export const loginSchema = z.object({
+    email: z.string().email('Email invalido'),
+    senha: z.string().min(1, 'Senha e obrigatoria'),
+});
+export type LoginInput = z.infer<typeof loginSchema>;
+
 // Corpo para ADICIONAR um servico a uma OS (rota POST /os/:id/servicos)
 // ---------------------------------------------------------------------
 export const osServicoSchema = z.object({
