@@ -1,0 +1,16 @@
+# =====================================================================
+# .gitignore (backend) — arquivos que NAO vao para o Git
+# ---------------------------------------------------------------------
+# O '.env' guarda senhas reais de banco. Versionar esse arquivo seria
+# expor credenciais a qualquer pessoa com acesso ao repositorio.
+# Por isso ele e ignorado; o '.env.example' (sem senha) e que e publicado.
+# =====================================================================
+node_modules
+dist
+
+# seguranca: nunca versionar credenciais
+.env
+.env.local
+
+# log de desenvolvimento
+*.log
