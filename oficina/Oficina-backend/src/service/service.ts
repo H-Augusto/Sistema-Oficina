@@ -11,12 +11,13 @@
 // errado, lanca um 'RegraNegocioErro' com um codigo. Quem traduz esse
 // codigo para status HTTP (404, 409...) e o controller.
 // =====================================================================
-import { hashCpf, hashSenha } from '../hash';
+import { hashCpf, hashSenha, conferirSenha } from '../hash';
+import { gerarToken } from '../jwt';
 import {
     criarCliente, buscarClientePorId, listarClientes, atualizarCliente,
     desativarCliente, cpfClienteExiste,
     criarUsuario, buscarUsuarioPorId, listarUsuarios, atualizarUsuario,
-    desativarUsuario, emailUsuarioExiste,
+    desativarUsuario, emailUsuarioExiste, buscarUsuarioParaLogin,
     criarVeiculo, buscarVeiculoPorId, listarVeiculos, atualizarVeiculo,
     desativarVeiculo, placaVeiculoExiste,
     criarMecanico, buscarMecanicoPorId, listarMecanicos, atualizarMecanico,
@@ -27,7 +28,7 @@ import {
     listarServicosDaOs, adicionarServicoNaOs, removerServicoDaOs,
     listarMecanicosDaOs, atribuirMecanicoNaOs, removerMecanicoDaOs,
 } from '../repository/repository';
-import { ClienteInput, UsuarioInput, VeiculoInput, MecanicoInput, ServicoInput, OsInput } from '../schemas';
+import { ClienteInput, UsuarioInput, VeiculoInput, MecanicoInput, ServicoInput, OsInput, LoginInput } from '../schemas';
 
 // ---------------------------------------------------------------------
 // Erro de regra de negocio.
@@ -36,7 +37,7 @@ import { ClienteInput, UsuarioInput, VeiculoInput, MecanicoInput, ServicoInput, 
 // ---------------------------------------------------------------------
 export class RegraNegocioErro extends Error {
     constructor(
-        public readonly codigo: 'NAO_ENCONTRADO' | 'JA_CADASTRADO' | 'CONFLITO_RELACAO',
+        public readonly codigo: 'NAO_ENCONTRADO' | 'JA_CADASTRADO' | 'NAO_AUTENTICADO',
         message: string
     ) {
         super(message); // 'super' passa a mensagem para a classe 'Error'
@@ -48,6 +49,43 @@ export class RegraNegocioErro extends Error {
     static jaCadastrado(mensagem: string) {
         return new RegraNegocioErro('JA_CADASTRADO', mensagem);
     }
+    static naoAutenticado(mensagem: string) {
+        return new RegraNegocioErro('NAO_AUTENTICADO', mensagem);
+    }
+}
+
+
+// =====================================================================
+// AUTENTICACAO (login)
+// =====================================================================
+export async function autenticar(dados: LoginInput) {
+    // Busca o usuario pelo email (esta busca INCLUI o hash da senha,
+    // porque e aqui que vamos conferir contra a senha digitada)
+    const usuario = await buscarUsuarioParaLogin(dados.email);
+
+    // SEGREDO DE SEGURANCA: se o email nao existe OU a senha esta errada,
+    // devolvemos a MESMA mensagem generica. Se dissemos "email nao
+    // encontrado" de um jeito e "senha incorreta" de outro, um atacante
+    // usaria isso para descobrir QUAIS emails tem conta na oficina
+    // (isso se chama ataque de enumeracao).
+    if (!usuario) {
+        throw RegraNegocioErro.naoAutenticado('Email ou senha invalidos');
+    }
+
+    // Compara a senha digitada com o hash guardado (bcrypt)
+    const senhaConfere = await conferirSenha(dados.senha, usuario.senha);
+    if (!senhaConfere) {
+        throw RegraNegocioErro.naoAutenticado('Email ou senha invalidos');
+    }
+
+    // Senha bateu: gera o token assinado com os dados do usuario.
+    // Note que guardamos SÓ o necessario (id e nome), nunca a senha.
+    const token = gerarToken({ id: usuario.id_usuario, nome: usuario.nome });
+
+    return {
+        token,
+        usuario: { id: usuario.id_usuario, nome: usuario.nome, email: usuario.email },
+    };
 }
 
 

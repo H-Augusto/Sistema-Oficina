@@ -21,8 +21,9 @@ import {
     listarTodasOs, buscarUmaOs, cadastrarOs, editarOs, desativarUmaOs,
     servicosDeUmaOs, adicionarServicoAos, removerServicoDaOsService,
     mecanicosDeUmaOs, atribuirMecanicoAos, removerMecanicoDaOsService,
+    autenticar,
 } from '../service/service';
-import { clienteSchema, usuarioSchema, veiculoSchema, mecanicoSchema, servicoSchema, osSchema, osServicoSchema, osMecanicoSchema } from '../schemas';
+import { clienteSchema, usuarioSchema, veiculoSchema, mecanicoSchema, servicoSchema, osSchema, osServicoSchema, osMecanicoSchema, loginSchema } from '../schemas';
 
 // ---------------------------------------------------------------------
 // asyncHandler: embrulha um handler async.
@@ -113,6 +114,18 @@ export const validarServico = validar(servicoSchema);
 export const validarOs = validar(osSchema);
 export const validarOsServico = validar(osServicoSchema);
 export const validarOsMecanico = validar(osMecanicoSchema);
+export const validarLogin = validar(loginSchema);
+
+
+// =====================================================================
+// AUTENTICACAO
+// =====================================================================
+export const authController = {
+    // POST /api/login — confere email+senha e devolve o token
+    login: asyncHandler(async (req, res) => {
+        res.status(200).json(await autenticar(req.body));
+    }),
+};
 
 
 // =====================================================================
@@ -334,8 +347,13 @@ export const osController = {
 // ---------------------------------------------------------------------
 export function tratarErro(erro: any, req: Request, res: Response, _next: NextFunction) {
     if (erro instanceof RegraNegocioErro) {
-        const status = erro.codigo === 'NAO_ENCONTRADO' ? 404 : 409;
-        return res.status(status).json({ mensagem: erro.message });
+        // Mapa de codigo de dominio -> status HTTP
+        const mapaStatus = {
+            NAO_ENCONTRADO: 404,   // recurso nao existe
+            JA_CADASTRADO: 409,    // duplicidade (CPF/email/placa)
+            NAO_AUTENTICADO: 401,  // credenciais invalidas
+        } as const;
+        return res.status(mapaStatus[erro.codigo]).json({ mensagem: erro.message });
     }
     console.error(erro); // erro inesperado: registrar para investigar
     return res.status(500).json({ mensagem: 'Erro interno no servidor' });

@@ -97,6 +97,17 @@ export async function buscarUsuarioPorId(id: number): Promise<RowDataPacket | nu
     return linhas[0] ?? null;
 }
 
+// Busca usuario pelo email INCLUSIVE a senha (hash).
+// Uso EXCLUSIVO do login: aqui precisamos do hash para comparar com a
+// senha digitada. Fora do login, a senha jamais deve ser selecionada.
+export async function buscarUsuarioParaLogin(email: string): Promise<RowDataPacket | null> {
+    const [linhas] = await pool.query<RowDataPacket[]>(
+        `SELECT id_usuario, nome, email, senha FROM usuario WHERE email = ? AND active = 1 LIMIT 1`,
+        [email]
+    );
+    return linhas[0] ?? null;
+}
+
 export async function criarUsuario(dados: {
     nome: string; email: string; senhaHash: string;
 }): Promise<ResultSetHeader> {
